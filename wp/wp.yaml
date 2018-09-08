@@ -48,9 +48,12 @@ metadata:
   labels:
     app: wp
 spec:
-  ports:
-    - port: 80
+ type: NodePort
+ ports:
+ - name: http
+   port: 80
+   targetPort: 80
+   protocol: TCP
   selector:
     app: wp
     tier: frontend
-  type: LoadBalancer
