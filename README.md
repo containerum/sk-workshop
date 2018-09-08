@@ -112,8 +112,10 @@ kubectl create -f https://raw.githubusercontent.com/containerum/sk-workshop/mast
 
 ```bash
 [centos@demo ~]$ kubectl get pv
-NAME      CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM     STORAGECLASS   REASON    AGE
-wp-pv     10Gi       RWO            Retain           Available             manual                   2s
+NAME       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM     STORAGECLASS   REASON    AGE
+mysql-pv   10Gi       RWO            Retain           Available             manual                   7s
+wp-pv      10Gi       RWO            Retain           Available             manual                   7s
+
 
 ```
 
@@ -125,9 +127,11 @@ kubectl create -f https://raw.githubusercontent.com/containerum/sk-workshop/mast
 ```
 
 ```bash
-[centos@demo ~]$ kubectl get pv
-NAME      CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS    CLAIM            STORAGECLASS   REASON    AGE
-wp-pv     10Gi       RWO            Retain           Bound     default/wp-pvc   manual                   42s
+[centos@demo ~]$ kubectl get pvc
+NAME        STATUS    VOLUME     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+mysql-pvc   Bound     mysql-pv   10Gi       RWO            manual         7s
+wp-pvc      Bound     wp-pv      10Gi       RWO            manual         7s
+
 ```
 
 ## Create Secret for MySQL Password
@@ -147,4 +151,26 @@ mysql-pass            Opaque                                1         12s
 
 ```bash
 kubectl create -f https://raw.githubusercontent.com/containerum/sk-workshop/master/wp/mysql.yaml
+```
+
+
+## Deploy WP
+
+```bash
+kubectl create -f https://raw.githubusercontent.com/containerum/sk-workshop/master/wp/wp.yaml
+```
+
+# 3. Deploy Containerum
+
+## Deploy Helm
+
+```bash
+curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > get_helm.sh
+chmod 700 get_helm.sh
+./get_helm.sh
+```
+
+```bash
+kubectl create -f https://raw.githubusercontent.com/containerum/sk-workshop/master/helm/rbac.yaml
+helm init --service-account tiller
 ```
