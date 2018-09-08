@@ -48,7 +48,6 @@ metadata:
   labels:
     app: wp
 spec:
- type: NodePort
  ports:
  - name: http
    port: 80
@@ -57,3 +56,4 @@ spec:
   selector:
     app: wp
     tier: frontend
+ type: NodePort
