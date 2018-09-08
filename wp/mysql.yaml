@@ -8,10 +8,12 @@ spec:
   selector:
     matchLabels:
       app: wp
+      tier: mysql
   template:
     metadata:
       labels:
         app: wp
+        tier: mysql
     spec:
       containers:
       - image: mysql:5.6
@@ -46,4 +48,5 @@ spec:
     - port: 3306
   selector:
     app: wp
+    tier: mysql
   clusterIP: None
