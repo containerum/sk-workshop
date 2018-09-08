@@ -174,3 +174,31 @@ chmod 700 get_helm.sh
 kubectl create -f https://raw.githubusercontent.com/containerum/sk-workshop/master/helm/rbac.yaml
 helm init --service-account tiller
 ```
+
+## Deploy Ingress Controller
+
+```bash
+sudo yum install git
+git clone https://github.com/nginxinc/kubernetes-ingress.git
+cd kubernetes-ingress/deployments/
+```
+
+```bash
+kubectl apply -f common/ns-and-sa.yaml
+kubectl apply -f common/default-server-secret.yaml
+kubectl apply -f rbac/rbac.yaml
+kubectl apply -f deployment/nginx-ingress.yaml
+```
+
+Check:
+```bash
+kubectl get pods --namespace=nginx-ingress
+```
+
+## Deploy Containerum
+
+```bash
+helm repo add containerum https://charts.containerum.io
+helm repo update
+helm install containerum/containerum
+```
