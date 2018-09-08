@@ -33,7 +33,7 @@ spec:
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
-          claimName: wp-pvc
+          claimName: mysql-pvc
 
 ---
 
