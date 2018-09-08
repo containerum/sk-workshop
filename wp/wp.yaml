@@ -48,12 +48,13 @@ metadata:
   labels:
     app: wp
 spec:
- ports:
- - name: http
-   port: 80
-   targetPort: 80
-   protocol: TCP
+  ports:
+    - name: html
+      port: 80
+      targetPort: 80
+      protocol: TCP
   selector:
     app: wp
     tier: frontend
- type: NodePort
+  clusterIP: None
+type: NodePort
