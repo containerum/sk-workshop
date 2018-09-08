@@ -56,5 +56,4 @@ spec:
   selector:
     app: wp
     tier: frontend
-  clusterIP: None
-type: NodePort
+  type: NodePort
