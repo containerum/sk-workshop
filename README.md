@@ -32,6 +32,7 @@ sudo systemctl enable kubelet && sudo systemctl start kubelet
 ### Install kubernetes
 
 ```bash
+sudo sysctl net.bridge.bridge-nf-call-iptables=1
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --kubernetes-version=stable-1.11
 ```
 
@@ -71,12 +72,10 @@ kube-system   kube-scheduler-demo.eu-central-1.compute.internal                 
 
 ```
 
-
-### Install Canal
+### Install Flanel
 
 ```bash
-kubectl apply -f https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/canal/rbac.yaml
-kubectl apply -f https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/canal/canal.yaml
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.10.0/Documentation/kube-flannel.yml
 ```
 
 #### Check pods
@@ -175,24 +174,47 @@ kubectl create -f https://raw.githubusercontent.com/containerum/sk-workshop/mast
 helm init --service-account tiller
 ```
 
+Check:
+```bash
+helm list
+```
+
 ## Deploy Ingress Controller
 
-```bash
-sudo yum install git
-git clone https://github.com/nginxinc/kubernetes-ingress.git
-cd kubernetes-ingress/deployments/
+```
+bash -c 'cat > ingress.yaml' << EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress-nginx
+  namespace: ingress-nginx
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  - name: https
+    port: 443
+    targetPort: 443
+    protocol: TCP
+  selector:
+    app.kubernetes.io/name: ingress-nginx
+  externalIPs:
+  - %EXTERNAL IP%
+EOF
 ```
 
 ```bash
-kubectl apply -f common/ns-and-sa.yaml
-kubectl apply -f common/default-server-secret.yaml
-kubectl apply -f rbac/rbac.yaml
-kubectl apply -f deployment/nginx-ingress.yaml
+kubectl apply -f ingress.yaml
 ```
 
 Check:
 ```bash
-kubectl get pods --namespace=nginx-ingress
+kubectl get pods --namespace=ingress
+NAME                                                         READY     STATUS    RESTARTS   AGE
+musty-bobcat-nginx-ingress-controller-659565fbc6-zx8fj       1/1       Running   0          46s
+musty-bobcat-nginx-ingress-default-backend-c57dc4765-d72hp   1/1       Running   0          46s
 ```
 
 ## Deploy Containerum
