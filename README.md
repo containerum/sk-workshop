@@ -226,3 +226,7 @@ helm repo add containerum https://charts.containerum.io
 helm repo update
 helm install containerum/containerum
 ```
+
+```
+kubectl label node $HOSTNAME role=slave
+```
