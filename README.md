@@ -183,7 +183,11 @@ helm list
 
 ## Deploy Ingress Controller
 
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml
 ```
+
+```bash
 bash -c 'cat > ingress.yaml' << EOF
 apiVersion: v1
 kind: Service
