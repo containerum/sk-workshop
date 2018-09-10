@@ -2,6 +2,8 @@
 
 Example for Centos.
 
+ssh centos@PUBLIC_IP
+
 ## 1. Install kubernetes
 
 ### Install Docker
