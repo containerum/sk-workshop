@@ -102,66 +102,35 @@ kube-system   kube-scheduler-demo.eu-central-1.compute.internal                 
 kubectl taint nodes --all node-role.kubernetes.io/master-
 ```
 
+# 3. Deploy simple app "Hello world"
 
-# 2. Deploy WP
-
-## Create PersistentVolume
-
-```bash
-kubectl create -f https://raw.githubusercontent.com/containerum/sk-workshop/master/wp/pv.yaml
-```
+Create deployment
 
 ```bash
-[centos@demo ~]$ kubectl get pv
-NAME       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM     STORAGECLASS   REASON    AGE
-mysql-pv   10Gi       RWO            Retain           Available             manual                   7s
-wp-pv      10Gi       RWO            Retain           Available             manual                   7s
-
-
+kubectl create -f https://raw.githubusercontent.com/containerum/sk-workshop/master/hello/hello-deploy.yaml
 ```
-
-
-## Create PersistentVolumeClaim
+Create service
 
 ```bash
-kubectl create -f https://raw.githubusercontent.com/containerum/sk-workshop/master/wp/pvc.yaml
+kubectl create -f https://raw.githubusercontent.com/containerum/sk-workshop/master/hello/hello-service.yaml
 ```
-
-```bash
-[centos@demo ~]$ kubectl get pvc
-NAME        STATUS    VOLUME     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-mysql-pvc   Bound     mysql-pv   10Gi       RWO            manual         7s
-wp-pvc      Bound     wp-pv      10Gi       RWO            manual         7s
+Get Service
 
 ```
+kubectl get svc
 
-## Create Secret for MySQL Password
-
-``` bash
-kubectl create secret generic mysql-pass --from-literal=password=strongpassword
+NAME         TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+hw           LoadBalancer   10.103.70.246   <pending>     5000:30180/TCP   16s
+kubernetes   ClusterIP      10.96.0.1       <none>        443/TCP          21m
 ```
+Go to browser
 
-```bash
-[centos@demo ~]$ kubectl get secrets
-NAME                  TYPE                                  DATA      AGE
-default-token-546hk   kubernetes.io/service-account-token   3         39m
-mysql-pass            Opaque                                1         12s
 ```
-
-## Deploy MySQL
-
-```bash
-kubectl create -f https://raw.githubusercontent.com/containerum/sk-workshop/master/wp/mysql.yaml
+https://ip:30180
 ```
+where `ip` is IP of your VM
 
-
-## Deploy WP
-
-```bash
-kubectl create -f https://raw.githubusercontent.com/containerum/sk-workshop/master/wp/wp.yaml
-```
-
-# 3. Deploy Containerum
+# 4. Deploy Containerum
 
 ## Deploy Helm
 
@@ -233,4 +202,64 @@ helm install containerum/containerum
 
 ```
 kubectl label node $HOSTNAME role=slave
+```
+
+# 5. Deploy WP+MySQL
+
+This app uses Volumes
+
+## Create PersistentVolume
+
+```bash
+kubectl create -f https://raw.githubusercontent.com/containerum/sk-workshop/master/wp/pv.yaml
+```
+
+```bash
+[centos@demo ~]$ kubectl get pv
+NAME       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM     STORAGECLASS   REASON    AGE
+mysql-pv   10Gi       RWO            Retain           Available             manual                   7s
+wp-pv      10Gi       RWO            Retain           Available             manual                   7s
+
+
+```
+
+
+## Create PersistentVolumeClaim
+
+```bash
+kubectl create -f https://raw.githubusercontent.com/containerum/sk-workshop/master/wp/pvc.yaml
+```
+
+```bash
+[centos@demo ~]$ kubectl get pvc
+NAME        STATUS    VOLUME     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+mysql-pvc   Bound     mysql-pv   10Gi       RWO            manual         7s
+wp-pvc      Bound     wp-pv      10Gi       RWO            manual         7s
+
+```
+
+## Create Secret for MySQL Password
+
+``` bash
+kubectl create secret generic mysql-pass --from-literal=password=strongpassword
+```
+
+```bash
+[centos@demo ~]$ kubectl get secrets
+NAME                  TYPE                                  DATA      AGE
+default-token-546hk   kubernetes.io/service-account-token   3         39m
+mysql-pass            Opaque                                1         12s
+```
+
+## Deploy MySQL
+
+```bash
+kubectl create -f https://raw.githubusercontent.com/containerum/sk-workshop/master/wp/mysql.yaml
+```
+
+
+## Deploy WP
+
+```bash
+kubectl create -f https://raw.githubusercontent.com/containerum/sk-workshop/master/wp/wp.yaml
 ```
